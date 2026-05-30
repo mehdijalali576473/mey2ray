@@ -1,4 +1,3 @@
-```bash
 # Mey2Ray - VLESS Proxy for GitHub Codespaces
 
 [![GitHub Codespaces](https://img.shields.io/badge/GitHub-Codespaces-181717?logo=github)](https://github.com/features/codespaces)
@@ -199,4 +198,3 @@ Use at your own risk and only in compliance with applicable laws and regulations
 
 **Happy tunneling!** 🛸  
 — MeyTiii
-```
