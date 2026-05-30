@@ -1,3 +1,4 @@
+```bash
 # Mey2Ray - VLESS Proxy for GitHub Codespaces
 
 [![GitHub Codespaces](https://img.shields.io/badge/GitHub-Codespaces-181717?logo=github)](https://github.com/features/codespaces)
@@ -105,3 +106,97 @@ It automatically generates a unique UUID, provides ready-to-use VLESS links with
     "wsSettings": { "path": "/" }
   }
 }
+```
+
+**devcontainer.json** – makes port 443 public automatically:
+```json
+"postAttachCommand": {
+  "public": "gh codespace ports visibility 443:public -c $CODESPACE_NAME",
+  "xray": "sudo -E /usr/local/bin/entrypoint.sh"
+},
+"portsAttributes": {
+  "443": { "label": "xray-vless", "protocol": "http", "onAutoForward": "silent" }
+}
+```
+
+---
+
+## 🔗 Obtaining VLESS Links
+
+The `entrypoint.sh` prints links in the following format:
+
+```
+vless://<UUID>@<IP>:443?encryption=none&security=tls&type=ws&sni=<SNI>&path=%2F#@Mey2Ray
+```
+
+Where:
+- `<UUID>` – auto‑generated (or from `$VLESS_UUID`)
+- `<IP>` – one of the predefined static IPs
+- `<SNI>` – `<CODESPACE_NAME>-443.app.github.dev` (TLS server name)
+
+### Example link
+
+```
+vless://4b616b6f-6f6c-4e65-7773-abcdef123456@94.130.50.12:443?encryption=none&security=tls&type=ws&sni=mey2ray-unicorn-443.app.github.dev&path=%2F#@Mey2Ray
+```
+
+You can also override the UUID by setting the environment variable `VLESS_UUID` inside the Codespace before the container starts (e.g., in `.bashrc` or via `devcontainer.json` `containerEnv`).
+
+---
+
+## 🛠️ Manual Usage (Outside Codespaces)
+
+If you want to run this container locally or on a VPS:
+
+1. Clone the repository
+2. Build the image:
+   ```bash
+   docker build -t mey2ray .
+   ```
+3. Run the container:
+   ```bash
+   docker run -p 443:443 -e VLESS_UUID="your-uuid-here" mey2ray
+   ```
+4. The VLESS links will be printed in the console. Replace the IPs in the links with your server’s public IP.
+
+> **Note:** For local testing, you may need to disable TLS or provide a valid certificate. The current setup relies on GitHub’s TLS termination (port 443 → GitHub’s proxy), so running elsewhere requires additional TLS configuration (e.g., with Caddy or Nginx).
+
+---
+
+## ⚠️ Important Notes
+
+- **IPs are static** – The listed IPs belong to various hosting providers. They may change or become blocked over time. You can edit `entrypoint.sh` to add/remove IPs.
+- **TLS SNI must be valid** – The SNI is set to `<CODESPACE_NAME>-443.app.github.dev` because GitHub Codespaces terminates TLS at their edge. This is **required** for the connection to succeed from external clients.
+- **Port 443 only** – The proxy listens on port 443. Ensure your client uses that port and TLS.
+- **Heartbeat keeps the Codespace alive** – Without the periodic output, GitHub may shut down idle Codespaces. The script prints a message every 5 minutes to prevent that.
+- **UUID is generated once** – The same UUID is used for all links printed. Changing the UUID (via `VLESS_UUID`) will invalidate previously generated links.
+
+---
+
+## 📜 Disclaimer & Compliance
+
+This project is intended for **educational purposes only**.  
+Using proxy technologies may violate the terms of service of some providers, including **GitHub Codespaces**. Please review:
+
+- [GitHub Codespaces Terms of Service](https://docs.github.com/en/codespaces/overview/terms-of-service)
+- Acceptable Use Policies of any IP addresses you connect to.
+
+The author assumes **no liability** for misuse of this software.  
+Use at your own risk and only in compliance with applicable laws and regulations.
+
+---
+
+## 📄 License
+
+[MIT License](LICENSE) – free to use, modify, and distribute.
+
+---
+
+## 💬 Questions / Contributions
+
+- Open an issue on [GitHub](https://github.com/meytiii/mey2ray/issues)
+- Pull requests are welcome to improve IP lists, configuration, or documentation.
+
+**Happy tunneling!** 🛸  
+— MeyTiii
+```
