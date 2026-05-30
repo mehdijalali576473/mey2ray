@@ -59,12 +59,9 @@ If you don't have an app, search for "V2Ray client" for your device.
 By default, GitHub Codespaces **shuts down after 30 minutes of inactivity**.  
 Here's how to extend that to **4 hours (240 minutes)** – the maximum allowed:
 
-- In your Codespace window, look at the bottom‑left corner for a gear icon ⚙️ (Settings)
-- Or press `Ctrl + Shift + P` (Windows/Linux) / `Cmd + Shift + P` (Mac)
-- Type `Preferences: Open Settings (UI)`
+- In your GitHub settings, look at the bottom‑left corner for a Codespaces
 - Search for `idle timeout`
 - Change **"Idle Timeout"** from `30` to `240` minutes
-- Close the settings tab
 
 Now your proxy will stay alive for up to 4 hours without activity.
 
